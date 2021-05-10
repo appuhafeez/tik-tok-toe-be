@@ -18,5 +18,7 @@ public class GameResponseDto{
 	private String wonMessage;
 	
 	private String whoWonGame;
+	
+	private boolean isTie;
 
 }

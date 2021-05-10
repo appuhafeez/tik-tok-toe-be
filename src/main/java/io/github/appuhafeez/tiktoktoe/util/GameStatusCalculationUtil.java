@@ -40,9 +40,26 @@ public class GameStatusCalculationUtil {
 			return responseDto;
 		}
 		responseDto = checkPosibilityFour(convertedGameData, responseDto);
+		if(responseDto.isGameCompleted()) {
+			return responseDto;
+		}
+		responseDto = checkIfItsDraw(convertedGameData, responseDto);
 		return responseDto;
 	}
 	
+	private static GameResponseDto checkIfItsDraw(int[][] convertedGameData, GameResponseDto responseDto) {
+		for(int i=0;i<convertedGameData.length;i++) {
+			for(int j=0;j<convertedGameData.length;j++) {
+				if(convertedGameData[i][j]==100) {
+					return responseDto;
+				}
+			}
+		}
+		responseDto.setTie(true);
+		responseDto.setGameCompleted(true);
+		return responseDto;
+	}
+
 	private static GameResponseDto checkPosibilityThree(int[][] convertedGameData, GameResponseDto responseDto) {
 		int count = 0;
 		for(int i=0;i<convertedGameData.length;i++) {

@@ -52,7 +52,7 @@ public class GameService {
 		}
 		int gameCode = getUniqueGameCode();
 		RedisGamePojo redisGamePojo = RedisGamePojo.builder().gameCode(gameCode).timeToLive((long)gameTimeInMinutes).lastMoveBy(PlayerEnum.O)
-				.isGameStarted(false).spacesOccupiedBy(gameSpaces).spacesOccupiedPlayerIcons(gameOccupiedPlayerIcon).build();
+				.isGameStarted(false).spacesOccupiedBy(gameSpaces).spacesOccupiedPlayerIcons(gameOccupiedPlayerIcon).isGameStarted(false).build();
 
 		redisRepo.save(redisGamePojo,redisGamePojo.getGameCode()+"");
 
