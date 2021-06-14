@@ -1,6 +1,7 @@
 package io.github.appuhafeez.tiktoktoe.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -9,16 +10,17 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RedisConfiguration {
-	
+
 	@Value("${spring.redis.host:localhost}")
 	private String redisHost;
-	
+
 	@Value("${spring.redis.port:6379}")
 	private int redisPort;
-	
+
 	@Value("${spring.redis.password:}")
 	private String redisPass;
 

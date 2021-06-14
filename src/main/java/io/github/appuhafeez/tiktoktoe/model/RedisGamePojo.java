@@ -2,6 +2,7 @@ package io.github.appuhafeez.tiktoktoe.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,6 +31,8 @@ public class RedisGamePojo implements Serializable{
 	private List<Integer> spacesOccupiedBy;
 	
 	private PlayerEnum lastMoveBy;
+	
+	private Map<String, String> players;
 	
 	@JsonIgnore
 	private Long timeToLive;

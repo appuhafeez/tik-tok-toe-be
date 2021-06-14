@@ -5,6 +5,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,7 @@ import io.github.appuhafeez.tiktoktoe.service.GameService;
 import io.github.appuhafeez.tiktoktoe.util.GameStatusCalculationUtil;
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = "${allowed.origins}",allowedHeaders = "*")
+//@CrossOrigin(origins = "${allowed.origins}",allowedHeaders = "*")
 @RestController
 @RequestMapping("/game")
 @Slf4j
@@ -34,12 +36,12 @@ public class GameController {
 	private GameService gameService;
 	
 	@GetMapping("/create/new")
-	public int createNewGame() throws JsonProcessingException {
-		return gameService.getGameCode();
+	public int createNewGame(@AuthenticationPrincipal Authentication authentication) throws JsonProcessingException {
+		return gameService.getGameCode(authentication);
 	}
 	
 	@PostMapping("/continue/move")
-	public ResponseEntity<Void> continueMove(@Valid @RequestBody GameMoveRequest gameMoveRequest,BindingResult bindingResult){
+	public ResponseEntity<Void> continueMove(@AuthenticationPrincipal Authentication authentication,@Valid @RequestBody GameMoveRequest gameMoveRequest,BindingResult bindingResult){
 		if(bindingResult.hasErrors()) {
 			throw new RequestValidationException(GameStatusCalculationUtil.getErrorMessage(bindingResult));
 		}
@@ -49,7 +51,7 @@ public class GameController {
 		if(!gameService.isGameExists(gameMoveRequest.getGameCode())) {
 			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 		}else {
-			gameService.makeAMove(gameMoveRequest);
+			gameService.makeAMove(gameMoveRequest,authentication);
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		}
 	}
@@ -65,7 +67,7 @@ public class GameController {
 	}
 	
 	@PutMapping("/start/{gameCode}")
-	public ResponseEntity<Void> startGame(@PathVariable("gameCode") int gameCode){
+	public ResponseEntity<Void> startGame(@AuthenticationPrincipal Authentication authentication,@PathVariable("gameCode") int gameCode){
 		log.info("Game code to start: {}",gameCode);
 		if(gameCode<100000 || gameCode>999999) {
 			throw new RequestValidationException(GameStatusCalculationUtil.getErrorMessage("Invalid gamecode"));
@@ -73,7 +75,7 @@ public class GameController {
 		if(!gameService.isGameExists(gameCode)) {
 			return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 		}else {
-			if(gameService.startGame(gameCode)) {
+			if(gameService.startGame(gameCode,authentication)) {
 				return new ResponseEntity<Void>(HttpStatus.OK);
 			}else {
 				return new ResponseEntity<Void>(HttpStatus.ALREADY_REPORTED);
